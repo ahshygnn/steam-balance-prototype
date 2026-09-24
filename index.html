@@ -531,7 +531,7 @@ const balanceFaq=[
  ['如果在悠悠有品买的饰品卖不出去怎么办？','<p>方案中使用的 TF2 钥匙是热门饰品，上架后通常 1 小时售出。若超期仍未售出，可适当降低价格。</p><p>但请注意：降价会减少实际节省金额。</p>'],
  ['为什么获得的余额不能马上使用？','<p>为保障您的财产安全，Steam 可能会对出售所得款项进行临时冻结（最长 <b>5 天</b>），冻结期满后即可正常使用。极少数异常情况下，Steam 也可能撤销已完成的交易。</p>']
 ];
-function guideFlow(){return '<div class="guide-flow" aria-label="兑换流程"><div><i>1</i><b>下单购买</b><small>按目标匹配数量</small></div><div><i>2</i><b>卖家发货</b><small>等待饰品到货</small></div><div><i>3</i><b>确认收货</b><small>系统尝试帮您收货</small></div><div><i>4</i><b>Steam 上架出售</b><small>售出后获得余额</small></div></div>';}
+function guideFlow(){return '<section class="journey"><h3>怎样换到 Steam 余额？</h3><p class="journey-intro">不是直接充值，而是通过买入、卖出饰品换取余额。</p>'+[['设置目标余额','您想获得多少 Steam 余额？','输入目标金额，系统预估钥匙数量、购买花费和可节省金额。'],['购买饰品','在悠悠有品完成购买','核对方案后购买 TF2 钥匙。支付完成即返回兑换步骤。'],['等待饰品到货','无需留在页面等待','卖家发货后，系统尝试帮您收货；全部到货后通知您。如需补购，按提示处理。'],['Steam 出售得余额','到货后需要您自行操作','前往 Steam 库存上架钥匙，售出后获得 Steam 余额。实际金额与可用时间以 Steam 为准。']].map(([t,s,d],i)=>'<div class="journey-row"><span class="journey-number">'+(i+1)+'</span><div><h4>'+t+'</h4><b>'+s+'</b><p>'+d+'</p></div></div>').join('')+'</section>';}
 function inlineBalanceFaq(){return '<section class="guide-block"><h3>常见问题</h3>'+balanceFaq.map(([q,a])=>'<details class="guide-faq"><summary>'+q+'</summary><div class="guide-answer">'+a+'</div></details>').join('')+'</section>';}
 let guideReturnPage='home',guideReturnScroll=0;
 const renderBeforeGuide=render;
@@ -550,9 +550,19 @@ render=function(){
 document.addEventListener('click',e=>{
  const b=e.target.closest('[data-action]');if(!b)return;
  if(b.dataset.action==='balance-guide'){e.stopImmediatePropagation();guideReturnPage=page;guideReturnScroll=content.scrollTop;close();page='balance-guide';render();content.scrollTop=0;}
- if(b.dataset.action==='guide-tradable'){e.stopImmediatePropagation();show('Steam 账号交易准备','<p>1. 绑定您本人用于接收饰品的 Steam 账号。</p><p>2. 前往 Steam 的交易与社区市场页面，检查账号是否存在限制，并按页面提示完成处理。</p><p>3. 确认可以接收交易报价、使用社区市场后，再返回购买。</p><p class="tiny">具体限制与解除时间以 Steam 账号页面为准。本原型不收集账号密码。</p>');}
+ if(['guide-tradable','tutorial'].includes(b.dataset.action)){e.stopImmediatePropagation();openStandaloneGuide(b.dataset.action);}
 },true);
 const backBeforeGuide=document.getElementById('back').onclick;
 document.getElementById('back').onclick=function(e){if(page==='balance-guide'){page=guideReturnPage;render();content.scrollTop=guideReturnScroll;}else backBeforeGuide.call(this,e);};
+const standaloneGuides={
+ 'tutorial':{title:'如何上架到 Steam 市场',intro:'饰品到货后，需要您在 Steam 中自行上架。购买完成不等于已获得余额。',steps:[['打开 Steam 库存','登录接收本次钥匙的 Steam 账号，进入库存，选择 Team Fortress 2（TF2）。'],['选择钥匙并点击出售','找到“曼恩公司供应箱钥匙”，打开饰品详情，选择出售。如果没有出售入口，先检查该饰品及账号是否可使用市场。'],['核对售价与实际所得','参考方案推荐售价，核对 Steam 显示的买家支付金额、费用和您将获得的金额，再提交上架。推荐价仅供参考，实际成交以市场为准。'],['完成上架确认','如 Steam 要求进一步确认，请按提示在 Steam 手机令牌或相应确认入口完成操作。'],['查看成交与余额','在 Steam 市场查看在售及成交记录。未售出时可继续等待或调整价格；降价会减少实际节省。成交后检查钱包余额，若款项待处理，按 Steam 提示等待。']],note:'原型提供操作指引，不会替您在 Steam 上架、调价或确认交易。'},
+ 'guide-tradable':{title:'Steam 账号交易准备',intro:'购买前，请确认用于接收钥匙的账号可以接收交易报价，并能使用 Steam 社区市场。',steps:[['绑定正确的 Steam 账号','在悠悠有品完成 Steam 绑定，核对绑定账号与您准备接收钥匙、上架出售的账号一致。'],['检查交易报价状态','登录 Steam，打开库存中的交易报价入口。若出现交易限制，查看限制原因，并按 Steam 提示处理。'],['检查社区市场权限','打开 Steam 社区市场，查看账号是否存在市场使用限制。能接收饰品不代表一定可以立即在市场出售。'],['按提示完成安全设置','按 Steam 要求完成邮箱、Steam 令牌等安全验证；若存在等待期，需要等待页面显示的期限结束，不能通过本功能跳过。'],['返回方案重新检查','账号状态正常后，返回悠悠有品重新检查绑定状态和钥匙接收容量，再继续购买。']],note:'具体资格、限制原因与解除时间均以 Steam 当前账号提示为准。不要向他人提供密码、验证码或恢复码。'}
+};
+let standaloneReturn=null;
+function openStandaloneGuide(kind){standaloneReturn={page,scroll:content.scrollTop,html:content.innerHTML};close();page='learn-'+kind;render();content.scrollTop=0;}
+const renderWithFaq=render;
+render=function(){if(!page.startsWith('learn-')){renderWithFaq();return;}const g=standaloneGuides[page.slice(6)];document.getElementById('balance-guide-entry')?.remove();document.getElementById('title').textContent=g.title;document.getElementById('back').style.visibility='visible';footer.hidden=true;content.classList.remove('purchase-content','mine-screen');content.innerHTML='<p class="guide-lead">'+g.intro+'</p><section class="journey">'+g.steps.map(([t,d],i)=>'<div class="journey-row"><span class="journey-number">'+(i+1)+'</span><div><h4>'+t+'</h4><p>'+d+'</p></div></div>').join('')+'</section><p class="guide-lead" style="margin-top:16px">'+g.note+'</p>';};
+const returnFromGuide=document.getElementById('back').onclick;
+document.getElementById('back').onclick=function(e){if(page.startsWith('learn-')&&standaloneReturn){const previous=standaloneReturn;page=previous.page;render();content.innerHTML=previous.html;content.scrollTop=previous.scroll;standaloneReturn=null;}else returnFromGuide.call(this,e);};
 render();
-</script></body></html>
+</script><style>.journey{padding:18px 15px;background:linear-gradient(135deg,#edf5ff,#fff);border:1px solid #dce9fc;border-radius:14px;margin-bottom:20px}.journey h3{font-size:14px;margin:0 0 7px}.journey-intro{font-size:11px;line-height:1.8;color:#8392a9;margin:0 0 20px}.journey-row{position:relative;display:flex;gap:12px;padding-bottom:23px}.journey-row:last-child{padding-bottom:0}.journey-row:not(:last-child):before{content:'';position:absolute;left:13px;top:34px;bottom:7px;border-left:1px dashed #a8cbfa}.journey-number{display:grid;place-items:center;flex:none;width:28px;height:28px;background:#2487ff;color:#fff;border-radius:50%;font-size:12px;font-weight:700}.journey-row h4{font-size:13px;line-height:28px;margin:0 0 3px;color:#3165a6}.journey-row b{font-size:11px;font-weight:600;color:#536b88}.journey-row p{font-size:11px;line-height:1.9;color:#7e8fa7;margin:5px 0 0}</style></body></html>
