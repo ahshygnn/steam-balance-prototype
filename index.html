@@ -531,7 +531,7 @@ const balanceFaq=[
  ['如果在悠悠有品买的饰品卖不出去怎么办？','<p>方案中使用的 TF2 钥匙是热门饰品，上架后通常 1 小时售出。若超期仍未售出，可适当降低价格。</p><p>但请注意：降价会减少实际节省金额。</p>'],
  ['为什么获得的余额不能马上使用？','<p>为保障您的财产安全，Steam 可能会对出售所得款项进行临时冻结（最长 <b>5 天</b>），冻结期满后即可正常使用。极少数异常情况下，Steam 也可能撤销已完成的交易。</p>']
 ];
-function guideFlow(){return '<section class="journey"><h3>怎样换到 Steam 余额？</h3><p class="journey-intro">不是直接充值，而是通过买入、卖出饰品换取余额。</p>'+[['设置目标余额','您想获得多少 Steam 余额？','输入目标金额，系统预估钥匙数量、购买花费和可节省金额。'],['购买饰品','在悠悠有品完成购买','核对方案后购买 TF2 钥匙。支付完成即返回兑换步骤。'],['等待饰品到货','无需留在页面等待','卖家发货后，支持自动收货；全部到货后通知您。如需补购，按提示处理。'],['Steam 出售得余额','到货后需要您自行操作','前往 Steam 库存上架钥匙，售出后获得 Steam 余额。实际金额与可用时间以 Steam 为准。']].map(([t,s,d],i)=>'<div class="journey-row"><span class="journey-number">'+(i+1)+'</span><div><h4>'+t+'</h4><b>'+s+'</b><p>'+d+'</p></div></div>').join('')+'</section>';}
+function guideFlow(){return '<div class="guide-flow" aria-label="换余额流程"><div><i>1</i><b>设置目标</b><small>输入目标余额</small></div><div><i>2</i><b>购买饰品</b><small>按方案购买</small></div><div><i>3</i><b>等待到货</b><small>支持自动收货</small></div><div><i>4</i><b>出售得余额</b><small>自行在 Steam 出售</small></div></div>';}
 function inlineBalanceFaq(){return '<section class="guide-block"><h3>常见问题</h3>'+balanceFaq.map(([q,a])=>'<details class="guide-faq"><summary>'+q+'</summary><div class="guide-answer">'+a+'</div></details>').join('')+'</section>';}
 let guideReturnPage='home',guideReturnScroll=0;
 const renderBeforeGuide=render;
