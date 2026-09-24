@@ -517,4 +517,42 @@ for(const [id,target,gap,pending,age] of [
  db.records.push(r);
 }
 save();render();
+</script>
+<style>
+.guide-entry{font-size:12px;white-space:nowrap}.guide-block{margin-top:20px}.guide-block h3{font-size:14px;margin:0 0 12px}.guide-flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;background:#edf4ff;border:1px solid #dce9fc;border-radius:14px;padding:16px 6px;margin-bottom:20px;text-align:center}.guide-flow>div{position:relative;font-size:10px;color:#405779}.guide-flow>div:not(:last-child):after{content:'›';position:absolute;right:-5px;top:10px;color:#85b4f6;font-size:19px}.guide-flow i{display:grid;place-items:center;width:32px;height:32px;margin:0 auto 9px;background:#2586ff;color:white;border-radius:50%;font-style:normal;font-weight:700;font-size:14px}.guide-flow b{display:block;font-size:10px;white-space:nowrap}.guide-flow small{display:block;font-size:9px;color:#8295af;margin-top:5px;line-height:1.5}.guide-faq{margin:8px 0;background:#fff;border:1px solid #e1eaf7;border-radius:11px;overflow:hidden}.guide-faq summary{list-style:none;cursor:pointer;padding:14px 12px;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:8px;line-height:1.6}.guide-faq summary::-webkit-details-marker{display:none}.guide-faq summary:after{content:'⌄';color:#8c9bb0;font-size:16px;flex:none}.guide-faq[open] summary:after{content:'⌃'}.guide-answer{border-top:1px solid #edf1f7;padding:12px;font-size:12px;line-height:1.9;color:#74859e}.guide-answer p{margin:0 0 9px}.guide-answer p:last-child{margin-bottom:0}.guide-answer ol{padding-left:19px;margin:0 0 10px}.guide-example{background:#eff5ff;color:#426caa;border-radius:8px;padding:10px;font-size:11px}.guide-answer .link{font-size:12px;text-align:left;margin-top:6px}.guide-full{background:white;border-radius:12px;padding:15px;margin:10px 0}.guide-full h3{font-size:13px;line-height:1.7;margin:0 0 9px}.guide-full h3 span{color:#2683ee;margin-right:8px}.guide-full .guide-answer{padding:0;border:0}.guide-lead{font-size:12px;color:#8190a7;line-height:1.8;margin:0 0 14px}
+</style>
+<script>
+// Shared tutorial content: full guide and inline accordions use one source.
+const balanceFaq=[
+ ['什么是省钱买 Steam 余额？','<ol><li>先在悠悠有品上以低于 Steam 市场价买入饰品；</li><li>把饰品放到 Steam 市场卖出；</li><li>卖出所得即为 Steam 余额，可用于购买游戏、通行证、皮肤等。</li></ol><div class="guide-example">您花 ¥70 在悠悠有品买饰品 → 放到 Steam 市场卖掉 → Steam 钱包预估可获得约 ¥100 余额，相当于省了 ¥30。实际节省金额可能会随市场价格变动。</div>'],
+ ['点击方案付款之后，会发生什么？','<ol><li>系统按您想要的目标 Steam 金额进行换算和批量购买，卖家发货后，系统会尝试帮您收货；</li><li>收货成功后，您前往 Steam 库存将饰品上架到 Steam 市场；</li><li>售出后即可获得 Steam 余额。</li></ol><button class="link" data-action="tutorial">如何将饰品上架到 Steam 市场 ›</button>'],
+ ['我需要准备什么？','<p>一个可以进行报价和 Steam 市场交易的 Steam 账号。</p><button class="link" data-action="guide-tradable">让 Steam 账号变为可交易状态教程 ›</button>'],
+ ['在 Steam 市场出售要收手续费吗？','<p>Steam 市场出售饰品会被 Steam 收取约 15% 的费用，这些方案已将该费用考虑在内，您无需额外支付。</p>'],
+ ['如果在悠悠有品买的饰品卖不出去怎么办？','<p>方案中使用的 TF2 钥匙是热门饰品，上架后通常 1 小时售出。若超期仍未售出，可适当降低价格。</p><p>但请注意：降价会减少实际节省金额。</p>'],
+ ['为什么获得的余额不能马上使用？','<p>为保障您的财产安全，Steam 可能会对出售所得款项进行临时冻结（最长 <b>5 天</b>），冻结期满后即可正常使用。极少数异常情况下，Steam 也可能撤销已完成的交易。</p>']
+];
+function guideFlow(){return '<div class="guide-flow" aria-label="兑换流程"><div><i>1</i><b>下单购买</b><small>按目标匹配数量</small></div><div><i>2</i><b>卖家发货</b><small>等待饰品到货</small></div><div><i>3</i><b>确认收货</b><small>系统尝试帮您收货</small></div><div><i>4</i><b>Steam 上架出售</b><small>售出后获得余额</small></div></div>';}
+function inlineBalanceFaq(){return '<section class="guide-block"><h3>常见问题</h3>'+balanceFaq.map(([q,a])=>'<details class="guide-faq"><summary>'+q+'</summary><div class="guide-answer">'+a+'</div></details>').join('')+'</section>';}
+let guideReturnPage='home',guideReturnScroll=0;
+const renderBeforeGuide=render;
+render=function(){
+ const existing=document.getElementById('balance-guide-entry');if(existing)existing.remove();
+ if(page==='balance-guide'){
+  document.getElementById('title').textContent='说明与常见问题';document.getElementById('back').style.visibility='visible';footer.hidden=true;footer.innerHTML='';content.classList.remove('purchase-content','mine-screen');
+  content.innerHTML='<p class="guide-lead">先购买饰品，再前往 Steam 出售换取余额。</p>'+guideFlow()+balanceFaq.map(([q,a])=>'<section class="guide-full"><h3><span>问</span>'+q+'</h3><div class="guide-answer">'+a+'</div></section>').join('');return;
+ }
+ renderBeforeGuide();
+ if(page==='home'||page==='detail'){
+  content.insertAdjacentHTML('beforeend',inlineBalanceFaq());
+  const button=document.createElement('button');button.id='balance-guide-entry';button.className='link guide-entry';button.dataset.action='balance-guide';button.textContent='说明';document.querySelector('header').append(button);
+ }
+};
+document.addEventListener('click',e=>{
+ const b=e.target.closest('[data-action]');if(!b)return;
+ if(b.dataset.action==='balance-guide'){e.stopImmediatePropagation();guideReturnPage=page;guideReturnScroll=content.scrollTop;close();page='balance-guide';render();content.scrollTop=0;}
+ if(b.dataset.action==='guide-tradable'){e.stopImmediatePropagation();show('Steam 账号交易准备','<p>1. 绑定您本人用于接收饰品的 Steam 账号。</p><p>2. 前往 Steam 的交易与社区市场页面，检查账号是否存在限制，并按页面提示完成处理。</p><p>3. 确认可以接收交易报价、使用社区市场后，再返回购买。</p><p class="tiny">具体限制与解除时间以 Steam 账号页面为准。本原型不收集账号密码。</p>');}
+},true);
+const backBeforeGuide=document.getElementById('back').onclick;
+document.getElementById('back').onclick=function(e){if(page==='balance-guide'){page=guideReturnPage;render();content.scrollTop=guideReturnScroll;}else backBeforeGuide.call(this,e);};
+render();
 </script></body></html>
