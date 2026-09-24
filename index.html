@@ -525,13 +525,13 @@ save();render();
 // Shared tutorial content: full guide and inline accordions use one source.
 const balanceFaq=[
  ['什么是省钱买 Steam 余额？','<ol><li>先在悠悠有品上以低于 Steam 市场价买入饰品；</li><li>把饰品放到 Steam 市场卖出；</li><li>卖出所得即为 Steam 余额，可用于购买游戏、通行证、皮肤等。</li></ol><div class="guide-example">您花 ¥70 在悠悠有品买饰品 → 放到 Steam 市场卖掉 → Steam 钱包预估可获得约 ¥100 余额，相当于省了 ¥30。实际节省金额可能会随市场价格变动。</div>'],
- ['点击方案付款之后，会发生什么？','<ol><li>系统按您想要的目标 Steam 金额进行换算和批量购买，卖家发货后，系统会尝试帮您收货；</li><li>收货成功后，您前往 Steam 库存将饰品上架到 Steam 市场；</li><li>售出后即可获得 Steam 余额。</li></ol><button class="link" data-action="tutorial">如何将饰品上架到 Steam 市场 ›</button>'],
+ ['点击方案付款之后，会发生什么？','<ol><li>系统按您想要的目标 Steam 金额进行换算和批量购买，卖家发货后，支持自动收货；</li><li>收货成功后，您前往 Steam 库存将饰品上架到 Steam 市场；</li><li>售出后即可获得 Steam 余额。</li></ol><button class="link" data-action="tutorial">如何将饰品上架到 Steam 市场 ›</button>'],
  ['我需要准备什么？','<p>一个可以进行报价和 Steam 市场交易的 Steam 账号。</p><button class="link" data-action="guide-tradable">让 Steam 账号变为可交易状态教程 ›</button>'],
  ['在 Steam 市场出售要收手续费吗？','<p>Steam 市场出售饰品会被 Steam 收取约 15% 的费用，这些方案已将该费用考虑在内，您无需额外支付。</p>'],
  ['如果在悠悠有品买的饰品卖不出去怎么办？','<p>方案中使用的 TF2 钥匙是热门饰品，上架后通常 1 小时售出。若超期仍未售出，可适当降低价格。</p><p>但请注意：降价会减少实际节省金额。</p>'],
  ['为什么获得的余额不能马上使用？','<p>为保障您的财产安全，Steam 可能会对出售所得款项进行临时冻结（最长 <b>5 天</b>），冻结期满后即可正常使用。极少数异常情况下，Steam 也可能撤销已完成的交易。</p>']
 ];
-function guideFlow(){return '<section class="journey"><h3>怎样换到 Steam 余额？</h3><p class="journey-intro">不是直接充值，而是通过买入、卖出饰品换取余额。</p>'+[['设置目标余额','您想获得多少 Steam 余额？','输入目标金额，系统预估钥匙数量、购买花费和可节省金额。'],['购买饰品','在悠悠有品完成购买','核对方案后购买 TF2 钥匙。支付完成即返回兑换步骤。'],['等待饰品到货','无需留在页面等待','卖家发货后，系统尝试帮您收货；全部到货后通知您。如需补购，按提示处理。'],['Steam 出售得余额','到货后需要您自行操作','前往 Steam 库存上架钥匙，售出后获得 Steam 余额。实际金额与可用时间以 Steam 为准。']].map(([t,s,d],i)=>'<div class="journey-row"><span class="journey-number">'+(i+1)+'</span><div><h4>'+t+'</h4><b>'+s+'</b><p>'+d+'</p></div></div>').join('')+'</section>';}
+function guideFlow(){return '<section class="journey"><h3>怎样换到 Steam 余额？</h3><p class="journey-intro">不是直接充值，而是通过买入、卖出饰品换取余额。</p>'+[['设置目标余额','您想获得多少 Steam 余额？','输入目标金额，系统预估钥匙数量、购买花费和可节省金额。'],['购买饰品','在悠悠有品完成购买','核对方案后购买 TF2 钥匙。支付完成即返回兑换步骤。'],['等待饰品到货','无需留在页面等待','卖家发货后，支持自动收货；全部到货后通知您。如需补购，按提示处理。'],['Steam 出售得余额','到货后需要您自行操作','前往 Steam 库存上架钥匙，售出后获得 Steam 余额。实际金额与可用时间以 Steam 为准。']].map(([t,s,d],i)=>'<div class="journey-row"><span class="journey-number">'+(i+1)+'</span><div><h4>'+t+'</h4><b>'+s+'</b><p>'+d+'</p></div></div>').join('')+'</section>';}
 function inlineBalanceFaq(){return '<section class="guide-block"><h3>常见问题</h3>'+balanceFaq.map(([q,a])=>'<details class="guide-faq"><summary>'+q+'</summary><div class="guide-answer">'+a+'</div></details>').join('')+'</section>';}
 let guideReturnPage='home',guideReturnScroll=0;
 const renderBeforeGuide=render;
@@ -539,7 +539,7 @@ render=function(){
  const existing=document.getElementById('balance-guide-entry');if(existing)existing.remove();
  if(page==='balance-guide'){
   document.getElementById('title').textContent='说明与常见问题';document.getElementById('back').style.visibility='visible';footer.hidden=true;footer.innerHTML='';content.classList.remove('purchase-content','mine-screen');
-  content.innerHTML='<p class="guide-lead">先购买饰品，再前往 Steam 出售换取余额。</p>'+guideFlow()+balanceFaq.map(([q,a])=>'<section class="guide-full"><h3><span>问</span>'+q+'</h3><div class="guide-answer">'+a+'</div></section>').join('');return;
+  content.innerHTML=guideFlow()+balanceFaq.map(([q,a])=>'<section class="guide-full"><h3><span>问</span>'+q+'</h3><div class="guide-answer">'+a+'</div></section>').join('');return;
  }
  renderBeforeGuide();
  if(page==='home'||page==='detail'){
